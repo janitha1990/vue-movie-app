@@ -24,19 +24,14 @@
             focus:outline-none
           "
           type="text"
-          :value="name"
+          :value="searchParam"
           @input="handleSearch"
         />
       </div>
     </div>
-
-    <!-- <span>{{ name }}</span> -->
   </div>
 
   <div class="mt-10 p-4 flex flex-wrap justify-center">
-    <!-- <div class="ml-4 text-2xl text-blue-400">
-      <router-link :to="`/cart`"> Cart </router-link>
-    </div> -->
     <div
       className="px-5 my-10 sm:grid md:grid-cols-2 xl:grid-cols-3 3xl:flex flex-wrap justify-center"
     >
@@ -58,28 +53,27 @@ export default {
   name: "Home",
   setup() {
     const movies = ref([]);
-    const name = ref("");
-    // const selectedMovie = ref({});
+    const searchParam = ref("");
     const store = inject("store");
+
     watchEffect(() => {
-      console.log("name: " + name.value);
-      getMoviesQuery();
+      searchParam.value !== "" && getMoviesQuery();
     });
 
+    // Fn to call api for movies
     function getMoviesQuery() {
-      console.log("getMoviesQuery");
       fetch(
         `https://api.themoviedb.org/3/search/movie?api_key=${
           import.meta.env.VITE_API_KEY
-        }&query=${name.value}`
+        }&query=${searchParam.value}`
       )
         .then((res) => res.json())
         .then((data) => {
           movies.value = data.results;
-          console.log(movies);
         });
     }
 
+    // Fn to get state from local storage.
     function debounce(fn, wait) {
       let timer;
       return (event) => {
@@ -92,24 +86,27 @@ export default {
       };
     }
 
+    // Fn to input search value to searchParam
     function setInputValue(event) {
       const target = event.target;
-      name.value = target.value;
+      searchParam.value = target.value;
     }
-
+    // Fn to add selected movie to store
     function getClickedItem(movie) {
-      // selectedMovie.value = movie;
-
       const _movie = store.state.selectedMovies.find(
         (item) => item.id === movie.id
       );
       if (_movie === undefined)
-        store.state.selectedMovies.push(movie), store.state.counter++;
-      // store.state.selectedMovies.push(movie);
+        store.state.selectedMovies.push(movie),
+          store.state.counter++,
+          store.methods.setLocalStorage();
     }
-    const handleSearch = debounce(setInputValue, 600);
 
-    return { movies, name, handleSearch, getClickedItem };
+    // Fn to handle search input
+    const handleSearch = debounce(setInputValue, 600);
+    // Fn to get state from local storage
+    store.methods.getLocalStorage();
+    return { movies, searchParam, handleSearch, getClickedItem };
   },
   components: {
     Thumbnail,

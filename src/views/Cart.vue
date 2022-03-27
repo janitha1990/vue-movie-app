@@ -3,9 +3,17 @@ import { inject, ref } from "vue";
 import ListItem from "../components/ListItem.vue";
 
 const store = inject("store");
+// Fn to get state from local storage
 
+store.methods.getLocalStorage();
+// Fn to delete item from cart
 function listItemDelete(id) {
-  console.log(id);
+  const _temp = [...store.state.selectedMovies];
+  const _result = _temp.filter((elm) => elm.id !== id);
+
+  store.state.selectedMovies = _result;
+  store.state.counter--;
+  store.methods.setLocalStorage();
 }
 </script>
 

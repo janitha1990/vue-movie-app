@@ -5,7 +5,6 @@ const _baseUrl = ref("https://image.tmdb.org/t/p/original/");
 const props = defineProps({
   movie: Object,
 });
-// console.log(props.movie.release_date);
 </script>
 
 <template>
