@@ -12,19 +12,6 @@ const props = defineProps({
   <div
     className="group cursor-pointer p-2 transition duration-200 ease-in transform sm:hover:scale-105 hover:z-50"
   >
-    <!-- <Image
-      alt="{result.media_type}"
-      layout="responsive"
-      height="{1080}"
-      width="{1920}"
-      src="{"
-      `${_baseUrl}${result.backdrop_path
-      ||
-      result.poster_path}`
-      ||
-      `${_baseUrl}${result.poster_path}`
-      }
-    /> -->
     <div class="overflow-hidden">
       <img :src="_baseUrl + movie.poster_path" class="w-full" />
     </div>
